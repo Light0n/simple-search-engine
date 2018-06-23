@@ -3,7 +3,7 @@
 class Employee extends Person implements ISelfRank{
     //Attributes
     public $_email = "", $_phone = "", $_jobTitle = "", $_department = "";
-    public $_rankScore = 0;// store the ranking score assign by selfRank method
+    public $_rankScore;// store the ranking score assign by selfRank method
 
     //Constructor
     function __construct($employeeAttributes){
@@ -15,8 +15,8 @@ class Employee extends Person implements ISelfRank{
     }
 
     //return predifined ratio based on name
-    private function getRatio($property){
-        switch ($property){
+    private function getRatio($name){
+        switch ($name){
             case "_email":
                 return EMAIL_RATIO;
                 break;
@@ -105,7 +105,11 @@ class Employee extends Person implements ISelfRank{
  * than Partial Word Match occur 1000 times across phone, firstName, lastName, 
  * jobTitle and department fields (31000 + 1000). 
  * 
- * - In order to maintain the ranking order, 1000 is used as the maximum value of matches count.
+ * - In order to maintain the ranking order, 1000 is used as the maximum value 
+ * of matches count. Match count helps to ranking at the same match events type
+ * For example, 1st employee's rankScore has Partial Match which occurs 1 time 
+ * at jobTitle field is lower than 2nd employee's rankScore has Partial Match 
+ * occurs 2 times at jobTitle field.
  * 
  * - From the formula, the maximum value of Partial Word Match is
  * 0 + [32000 + 16000 + 8000 + 4000 + 2000 + 1000] + 1000 = 64000
@@ -134,6 +138,8 @@ class Employee extends Person implements ISelfRank{
         $sumRatios["partialMatchCount"] = 0;
         $sumRatios["wordMatchCount"] = 0;
         $sumRatios["partialWordMatchCount"] = 0;
+        //lowercase search terms
+        $terms = strtolower($terms);
         
         foreach($employeeReflector->getProperties() as $property){
             
@@ -144,11 +150,7 @@ class Employee extends Person implements ISelfRank{
 
             // get and lowercase content of current property
             $propertyContent = strtolower($property->getValue($this));
-            // get name of current property
-            $propertyName = $property->getName();
-
-            //lowercase search terms
-            $terms = strtolower($terms);
+            $propertyName = $property->getName();//get name of current property         
             
             //Check for Direct Match
             if($terms == $propertyContent){
@@ -192,11 +194,11 @@ class Employee extends Person implements ISelfRank{
                                 $sumRatios["wordMatchCount"]++;//increase match count
                                 //get and assign predefined value of match type only one time
                                 if(!array_key_exists("wordMatch", $sumRatios))
-                                    $sumRatios["wordMatch"] =$this-> getRatio("wordMatch");
-                                //get and assign predefined value of match field only one 
+                                    $sumRatios["wordMatch"] = $this-> getRatio("wordMatch");
+                                //get and assign predefined value of match fields only one 
                                 //time for each field
                                 if(!array_key_exists($propertyName, $sumRatios))
-                                    $sumRatios[$propertyName] =$this-> getRatio($propertyName);
+                                    $sumRatios[$propertyName] = $this-> getRatio($propertyName);
 
                             }else{// Check for Partial Word Match
                                 $matchCount = substr_count($word, $term);
@@ -205,10 +207,10 @@ class Employee extends Person implements ISelfRank{
                                     $sumRatios["partialWordMatchCount"] += $matchCount;
                                     //create key name for partial word match 
                                     $pwmPropertyName = 'PartialWordMatch'.$propertyName;
-                                    //get and assign predefined value of match field only one 
+                                    //get and assign predefined value of match fields only one 
                                     //time for each field
                                     if(!array_key_exists($pwmPropertyName, $sumRatios))
-                                        $sumRatios[$pwmPropertyName] =$this-> getRatio($propertyName);
+                                        $sumRatios[$pwmPropertyName] = $this-> getRatio($propertyName);
                                 }
                             }
                         }
@@ -216,7 +218,7 @@ class Employee extends Person implements ISelfRank{
                 }
             }
         }
-        //if match count is out of range 
+        //if match count is out of range, assign predifined max value to it
         if ($sumRatios["directMatchCount"] > MAX_MATCH_COUNT)
             $sumRatios["directMatchCount"] = MAX_MATCH_COUNT;
         if ($sumRatios["partialMatchCount"] > MAX_MATCH_COUNT)

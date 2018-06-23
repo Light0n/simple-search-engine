@@ -4,12 +4,7 @@
 
 class Page  {
 
-  static public $title;
-
-  //Constructor - Set the title when it is passed in __construct($newTitle)  {
-  // function __construct($newTitle = "Please name your page"){
-  //   $this->title = $newTitle;
-  // }
+  static public $title;//page title
 
   //This function displays the html header
   static function header() {
@@ -51,8 +46,8 @@ class Page  {
     </html>';
   }
 
-  //This function displays the upload form for the CSV file
-  static function uploadForm() { 
+  //This function displays the search form
+  static function searchForm() { 
     echo '<form>
     <div class="form-row align-items-center" method="GET">
         <div class="col-sm-4 my-1">
@@ -66,7 +61,7 @@ class Page  {
   }
 
   static function showEmployee($organization, $searchTerms)  {
-    //Setup the table roster 
+    //Setup the employee search table  
     echo '<!-- Table begin -->
     <div class="table-scroll-vertical">
     <table class="table table-sm table-striped" id="employees">
@@ -83,12 +78,13 @@ class Page  {
             <th scope="col">Department</th>
           </tr>
         </thead>
-        <tbody>';
-    $total = 0;
-    //Iterate through the roster and print it out
+        <tbody>';    
+    $total = 0;//number of search results
+    //Iterate through the employees array and print it out
     foreach ($organization->_employees as $employee)  {
         if($employee->_rankScore){//_rankScore > 0
-            $total++;
+            $total++;//increase search result
+            //display search results
             echo '<tr>
               <td>'.$employee->_firstName.'</td>
               <td>'.$employee->_lastName.'</td>
@@ -97,10 +93,12 @@ class Page  {
               <td>'.$employee->_jobTitle.'</td>
               <td>'.$employee->_department.'</td>
             </tr>';
+        }else{//_rankScore = 0, not match search terms
+          break;// stop for loop
         }
     }
 
-    //End the table roster
+    //End the employee search table
     echo '</tbody>
     </table>
     </div>
@@ -110,10 +108,12 @@ class Page  {
   }
 
   static function noResult($searchTerms){
+    //display no search results message
     echo '<div class="alert alert-danger" role="alert">Search for <strong>'.$searchTerms.'</strong>. No results founds! Please enter another search term.</div>';
   }
 
   static function invalidSeachTerms($searchTerms){
+    //display invalid search terms message
     echo '<div class="alert alert-warning" role="alert">Search for <strong>'.$searchTerms.'</strong>. Invalid search terms! Please enter not fewer than 3 characters.</div>';
   }
 }//End Page Class

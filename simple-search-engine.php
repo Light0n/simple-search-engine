@@ -1,22 +1,8 @@
 <?php
  /**
- * Group: 2
- * Members: Sofia, Vu Duy Hau, Joshua, Colton
  * 
- * Assignment/File Name:    Assigment 1
+ * Description: Simple Search Engine
  * 
- * Description: Search engine
- * 
- * This portion describes the File/Assignment
- * 
- * References:
- * 
- * In class Week5CarsDemo example 
- * Bootstrap framework
- * https://getbootstrap.com/docs/4.1/components/forms/
- * https://getbootstrap.com/docs/4.1/components/alerts/
- * https://getbootstrap.com/docs/4.1/content/tables/
- *      
 **/
 
 //Include constant definitions 
@@ -32,18 +18,14 @@ require_once("./inc/Person.class.php");
 require_once("./inc/Employee.class.php");
 require_once("./inc/Organization.class.php");
 
-
-//Instantiate a new Page Object
-// $page = new Page("CSIS 3280 - Assigment #1 - Group 2");
-
 //Set page title
 Page::$title = "CSIS 3280 - Assigment #1 - Group 2";
 
 //Display the Page headder
 Page::header();
 
-//Show the upload form
-Page::uploadForm();
+//Show the search form
+Page::searchForm();
 
 //Get contents file
 $contents = FileAgent::getFileContents(FILE_PATH);

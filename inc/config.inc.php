@@ -12,7 +12,7 @@ define('JOB_TITLE', 5);
 define('DEPARTMENT', 6);
 // Number of data columns in csv
 define('NUM_COLS', 7);
-//column of constructed email data
+//column number of constructed email field
 define('EMAIL', 7);
 // Rank order ratio numbers use to implement selfRank interface in Employee class 
 define('DIRECT_MATCH_RATIO', 256000);

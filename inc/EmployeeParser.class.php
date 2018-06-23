@@ -27,7 +27,7 @@ class EmployeeParse{
             for($j=0; $j < count($cols); $j++){
                 $cols[$j] = trim($cols[$j]);
             }
-            //Create and add email property
+            //Create and add email property to cols array
             $cols[] = strtolower($cols[FIRST_NAME]).".".strtolower($cols[LAST_NAME])."@csis3280.net";
 
             //Instantiate a new employee
@@ -35,7 +35,7 @@ class EmployeeParse{
             //Add employee to organization
             $this->_organization->addEmployee($employee);
         }
-        return $this->_organization;
+        return $this->_organization;//return a organization
     }
 }
 

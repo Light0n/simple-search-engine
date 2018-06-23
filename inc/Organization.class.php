@@ -2,15 +2,17 @@
 
 class Organization {
     //Attributes
-    public $_name, $_employees = array(), $_searchSuccess = false;
+    public $_name, $_employees = array();
+    public  $_searchSuccess = false;//true if have search results
 
+    //Add employee to employee array
     function addEmployee(Employee $employee){
         $this->_employees[] = $employee;
     }
 
     //Comparator function by rankScore
     function cmpByRankScore($x, $y){
-        return $x->_rankScore < $y->_rankScore; //descending sort
+        return $x->_rankScore < $y->_rankScore; //descending order
     }
 
     function searchByTerm($searchTerms){
@@ -18,7 +20,7 @@ class Organization {
         foreach($this->_employees as $employee){
             $employee->selfRank($searchTerms);
         }
-        //Sort employees
+        //Sort employees by $_rankScore
         usort($this->_employees, array('Organization','cmpByRankScore'));
         //Update _searchSuccess flag
         foreach($this->_employees as $employee){
